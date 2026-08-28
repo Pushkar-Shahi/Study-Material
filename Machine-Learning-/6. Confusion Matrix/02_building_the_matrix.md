@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#1E6FEB">🔵 Section 2 — Building the Matrix</span>
 
@@ -32,10 +32,10 @@ A grid used to compare **what actually happened** with **what your model predict
 | Match | **"True"** |
 | Mismatch | **"False"** |
 
-`
+```
 Predicted = Actual   →  "True"  (TP or TN)
 Predicted ≠ Actual   →  "False" (FP or FN)
-`
+```
 
 ---
 
@@ -66,7 +66,7 @@ Predicted ≠ Actual   →  "False" (FP or FN)
 ### 🛠️ MLOps Perspective: Automating the Matrix in Python
 > [!IMPORTANT]
 > You never build these by hand in practice. Scikit-learn generates this array for you instantly:
-> `python
+> ```python
 > from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 > import matplotlib.pyplot as plt
 >
@@ -78,7 +78,7 @@ Predicted ≠ Actual   →  "False" (FP or FN)
 > disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Healthy", "Sick"])
 > disp.plot(cmap="Blues")
 > plt.show()
-> `
+> ```
 > In ML pipelines (like MLflow or Weights & Biases), this visual matrix is automatically saved as an artifact for every model run so reviewers can approve or reject the model deployment.
 
 ---

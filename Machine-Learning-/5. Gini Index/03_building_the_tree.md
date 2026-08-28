@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#D4A017">🟡 Section 3 — Building the Tree</span>
 
@@ -12,11 +12,11 @@
 
 Since **Parents** had the lowest initial Gini Index (**0.36**), it sits at the very top of the tree.
 
-`
+```
 [Root Node: Parents?]
         ├── Yes → ?
         └── No  → ?
-`
+```
 
 ---
 
@@ -29,9 +29,9 @@ Since **Parents** had the lowest initial Gini Index (**0.36**), it sits at the v
 > [!TIP]
 > No uncertainty → this branch ends **immediately** at a final decision.
 
-`
+```
 Parents = Yes → 🍃 "Cinema"
-`
+```
 
 ---
 
@@ -44,9 +44,9 @@ When Parents = "No," the outcomes are **mixed** (Tennis, Stay in, etc.) — anot
 | **Weather** | **0.2** ✅ Lowest — wins! |
 | Money | 0.5 |
 
-`
+```
 Parents = No → [Next Node: Weather?]
-`
+```
 
 ---
 
@@ -60,12 +60,12 @@ Weather branches into **three** possibilities:
 | 🌧️ **Rainy** | Clear decision → 🍃 "Stay in" |
 | 🌬️ **Windy** | Still mixed → needs **one more** split |
 
-`
+```
 Weather:
    ├── Sunny → 🍃 "Tennis"
    ├── Rainy → 🍃 "Stay in"
    └── Windy → ?
-`
+```
 
 ---
 
@@ -78,17 +78,17 @@ The last remaining factor, **Money**, resolves the Windy branch.
 | Rich | 🍃 "Cinema" |
 | Poor | 🍃 "Shopping" |
 
-`
+```
 Windy:
    ├── Rich → 🍃 "Cinema"
    └── Poor → 🍃 "Shopping"
-`
+```
 
 ---
 
 ## 🌳 The Complete Decision Tree
 
-`
+```
 [Root Node: Parents?]
         ├── Yes → 🍃 "Cinema"
         └── No  → [Weather?]
@@ -97,7 +97,7 @@ Windy:
                       └── Windy → [Money?]
                                        ├── Rich → 🍃 "Cinema"
                                        └── Poor → 🍃 "Shopping"
-`
+```
 
 ---
 

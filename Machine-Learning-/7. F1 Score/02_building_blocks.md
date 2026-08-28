@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#1E6FEB">🔵 Section 2 — The Building Blocks</span>
 
@@ -23,10 +23,10 @@ To move beyond simple accuracy, we use a **Confusion Matrix** to track four spec
 
 ## 🎯 The Simple Reading Rule
 
-`
+```
 Prediction matches reality  →  "True"  (TP or TN)
 Prediction differs from reality → "False" (FP or FN)
-`
+```
 
 ---
 

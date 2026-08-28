@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#2E8B57">🟢 Section 1 — The Problem</span>
 
@@ -21,11 +21,11 @@ When dealing with **skewed (imbalanced) data**, a basic Accuracy score can compl
 > [!WARNING]
 > If a model predicts **"nobody has TB"** for every patient, it still scores **99% accuracy**.
 
-`
+```
 Model prediction: "Everyone is healthy"
 Accuracy:          99%
 Reality:           1 person is actually sick and gets missed entirely
-`
+```
 
 ---
 

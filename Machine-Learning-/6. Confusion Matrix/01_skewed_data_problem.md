@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#2E8B57">🟢 Section 1 — The "Skewed Data" Problem</span>
 
@@ -42,9 +42,9 @@ If a poorly designed model **simply predicts "healthy" for everyone**:
 
 That "1% error" means the **one person who is actually sick** is told they're healthy.
 
-`
+```
 Sick patient → Told "Healthy" → Doesn't seek treatment → Could die
-`
+```
 
 Because they trust the report, they don't seek treatment — a devastating consequence hidden behind a seemingly great accuracy score.
 
@@ -73,7 +73,7 @@ This is exactly why we need the **Confusion Matrix**: it lets us look past the o
 ### 🛠️ MLOps Perspective: Handling Imbalanced Data
 > [!NOTE]
 > MLOps engineers have several tools to fix models that fall into the "Accuracy Trap" during training:
-> - **Class Weights:** In sklearn, setting class_weight="balanced" forces the algorithm to penalize errors on the minority class (sick patients) much more heavily than errors on the majority class.
+> - **Class Weights:** In `sklearn`, setting `class_weight="balanced"` forces the algorithm to penalize errors on the minority class (sick patients) much more heavily than errors on the majority class.
 > - **SMOTE (Synthetic Minority Over-sampling Technique):** Synthetically generates new training examples for the minority class to balance the dataset before training.
 > - **Threshold Tuning:** Instead of assuming a >50% probability means "Sick", we can lower the threshold to >5% to aggressively flag anyone who might have the disease.
 

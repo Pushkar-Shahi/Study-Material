@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#E07B00">🟠 Section 4 — The Solution (F1 Score)</span>
 
@@ -19,11 +19,11 @@ The **precision-recall trade-off**: improving one usually causes the other to dr
 
 ## 🧮 The Formula
 
-F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+$$F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
 
-`
+```
 F1 Score = 2 × (Precision × Recall) / (Precision + Recall)
-`
+```
 
 > [!NOTE]
 > This is the **harmonic mean** of Precision and Recall — it penalizes extreme imbalances between the two more than a simple average would.
@@ -60,13 +60,13 @@ F1 Score = 2 × (Precision × Recall) / (Precision + Recall)
 ### 🛠️ MLOps Perspective: Automating F1 in Pipelines
 > [!NOTE]
 > When building CI/CD pipelines for Machine Learning (like GitHub Actions for models), you don't manually check these numbers. You write a test:
-> `python
+> ```python
 > from sklearn.metrics import f1_score
 > 
 > def test_model_performance():
 >     f1 = f1_score(y_true, y_pred)
 >     assert f1 > 0.85, f"Model degraded! F1 Score {f1} is below threshold."
-> `
+> ```
 > If a data scientist submits a new model that improves Accuracy but sacrifices too much Precision (causing the F1 score to drop below 0.85), the pipeline automatically blocks the model from being deployed to production!
 
 ---

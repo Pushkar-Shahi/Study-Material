@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#1E6FEB">🔵 Section 2 — Calculating Gini Decisions</span>
 
@@ -79,8 +79,8 @@ The variable with the **lowest** weighted Gini Index becomes the root node.
 > [!IMPORTANT]
 > The math you just did manually is executed thousands of times per second during model training.
 > - By default, algorithms like Random Forest test a random subset of features (like "Money" or "Weather") at each node, rather than *all* features. This prevents overfitting and forces tree diversity.
-> - You can tune the criterion hyperparameter in sklearn to use gini or entropy. 
-> - **In practice:** Both yield very similar trees! MLOps engineers usually leave it as gini by default because it's slightly faster to compute across huge datasets.
+> - You can tune the `criterion` hyperparameter in `sklearn` to use `gini` or `entropy`. 
+> - **In practice:** Both yield very similar trees! MLOps engineers usually leave it as `gini` by default because it's slightly faster to compute across huge datasets.
 
 ---
 

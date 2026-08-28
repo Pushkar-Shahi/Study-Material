@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # <span style="color:#2E8B57">🟢 Section 1 — The Basics</span>
 
@@ -18,11 +18,11 @@ A tool used to make decisions by organizing information into a **tree-like struc
 | 🔀 **Branches** | Sprout out to represent different variables or choices |
 | 🍃 **Final Decisions** | Where branches end — e.g., "go to the cinema," "play tennis," "go shopping" |
 
-`
+```
 [Top Element]
      ├── Branch A → 🍃 Final Decision
      └── Branch B → 🍃 Final Decision
-`
+```
 
 ---
 
@@ -56,7 +56,7 @@ The **Gini Index** is the mathematical tool used to decide:
 > [!NOTE]
 > When a tree has "clean" splits (i.e., low Gini Impurity at the leaves), the model is very confident about its predictions. 
 > - If a leaf has a Gini of 0.5, it means the model is essentially guessing 50/50.
-> - In a production setting, you can configure your model's prediction API to return **probability distributions** rather than just hard classes. E.g. predict_proba() in scikit-learn uses the ratio of classes in the leaf node (determined by the Gini Index) to say "I am 90% sure this is Spam."
+> - In a production setting, you can configure your model's prediction API to return **probability distributions** rather than just hard classes. E.g. `predict_proba()` in scikit-learn uses the ratio of classes in the leaf node (determined by the Gini Index) to say "I am 90% sure this is Spam."
 > - You can monitor these confidence scores in production to track when the model starts becoming uncertain about new data!
 
 ---
