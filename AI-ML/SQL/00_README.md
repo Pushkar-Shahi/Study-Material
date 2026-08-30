@@ -3,7 +3,7 @@
 # 🗺️ SQL Learning Roadmap
 ### *From Zero to Aggregations & Subqueries — BigQuery Edition*
 
-![Progress](https://img.shields.io/badge/Levels_Covered-5-blue) ![Status](https://img.shields.io/badge/Status-In_Progress-yellow) ![Platform](https://img.shields.io/badge/Platform-Google_BigQuery-4285F4?logo=googlebigquery&logoColor=white)
+![Progress](https://img.shields.io/badge/Levels_Covered-6-blue) ![Status](https://img.shields.io/badge/Status-Complete-brightgreen) ![Platform](https://img.shields.io/badge/Platform-Google_BigQuery-4285F4?logo=googlebigquery&logoColor=white)
 
 </div>
 
@@ -18,7 +18,7 @@
 | 3️⃣ | 🟡 **Organizing Data** | WHERE, ORDER BY | [`03_filtering_sorting.md`](./03_filtering_sorting.md) | ✅ |
 | 4️⃣ | 🟠 **Analyzing Data** | Aggregations, GROUP BY | [`04_aggregations.md`](./04_aggregations.md) | ✅ |
 | 5️⃣ | 🔴 **Advanced Logic** | HAVING, Subqueries | [`05_advanced_logic.md`](./05_advanced_logic.md) | ✅ |
-| 6️⃣ | 🔜 **JOINs & Beyond** | Not yet covered | — | ⏳ |
+| 6️⃣ | 🔜 **JOINs & Beyond** | INNER/LEFT/RIGHT JOIN, multi-table reports | [`06_joins & beyond.md`](./06_joins%20%26%20beyond.md) | ✅ |
 
 ---
 
@@ -31,6 +31,7 @@
 | 🟡 | Filtering & Sorting | `WHERE`, `ORDER BY`, `ASC`, `DESC` |
 | 🟠 | Aggregations | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `GROUP BY` |
 | 🔴 | Advanced Logic | `HAVING`, Subqueries, `IN` |
+| 🔜 | JOINs & Beyond | `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `COALESCE`, `CASE` |
 
 ---
 
@@ -44,7 +45,7 @@
 
 <div align="center">
 
-### 🔜 Coming Next: **Level 6 — JOINs** *(not yet covered in source material)*
-*INNER JOIN • LEFT JOIN • RIGHT JOIN • FULL JOIN*
+### 🎉 Roadmap Complete: **Level 6 — JOINs & Beyond**
+*INNER JOIN • LEFT JOIN • RIGHT JOIN • multi-table reporting*
 
 </div>
