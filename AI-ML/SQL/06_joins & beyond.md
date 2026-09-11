@@ -1,9 +1,9 @@
 <div align="center">
 
-# 🔗 SQL Joins & Reporting Practice
-### *AI & Machine Learning by Aditya Jain Sir — Lectures 38–40 (Earnest)*
+# 🧮 SQL: Joins, Subqueries & CASE WHEN
+### *AI & Machine Learning by Aditya Jain Sir — Lectures 39–42*
 
-![Progress](https://img.shields.io/badge/Sections-5-blue) ![Status](https://img.shields.io/badge/Status-Complete-brightgreen) ![Platform](https://img.shields.io/badge/Platform-Google_BigQuery-4285F4?logo=googlebigquery&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Complete-brightgreen) ![Platform](https://img.shields.io/badge/Platform-Google_BigQuery-4285F4?logo=googlebigquery&logoColor=white)
 
 </div>
 
@@ -13,26 +13,26 @@
 
 | # | Section | Focus |
 |---|-------|-------|
-| 1️⃣ | 🟩 [Basic Sales Joins](#-section-1--basic-sales-joins) | Product/Category/Supplier sales via INNER JOIN |
-| 2️⃣ | 🟦 [Finding Missing Relationships](#-section-2--finding-missing-relationships) | LEFT/RIGHT JOIN — no-sale products & never-ordered customers |
-| 3️⃣ | 🟨 [Multi-Table Customer Reports](#-section-3--multi-table-customer-reports) | Orders + successful payments, HAVING filters |
-| 4️⃣ | 🟧 [Multi-Table Product Reports](#-section-4--multi-table-product-reports) | Top 10 products, category MRP report, full supplier report |
-| 5️⃣ | 🟥 [Unsolved Practice Problems](#-section-5--unsolved-practice-problems) | DPP prompts to solve yourself |
+| 1️⃣ | 🟩 [Basic Sales Joins](#-1--basic-sales-joins) | INNER JOIN — product/category/supplier sales |
+| 2️⃣ | 🟦 [Finding Missing Relationships](#-2--finding-missing-relationships) | LEFT/RIGHT JOIN — no-sale products, never-ordered customers |
+| 3️⃣ | 🟨 [Multi-Table Reports](#-3--multi-table-reports) | 3–4 table joins, HAVING, LIMIT |
+| 4️⃣ | 🟧 [ALTER TABLE & Warehouse Report](#-4--alter-table--warehouse-report) | Renaming columns + full report |
+| 5️⃣ | 🟥 [Subqueries: Comparing Against Averages](#-5--subqueries-comparing-against-averages) | Nested & correlated subqueries |
+| 6️⃣ | 🟪 [CASE WHEN](#-6--case-when) | Age groups, gender labels, order value tiers |
+| 7️⃣ | 🟦‍⬛ [Advanced Integrated Report](#-7--advanced-integrated-report) | Combining WHERE + HAVING + CASE together |
 
 ---
 
-## 🗂️ The Tables in Play
+## 🗂️ Tables & Relationships
 
 ```
-e1.customers   e1.orders   e1.payments
+e1.customers   e1.orders    e1.payments    e1.warehouses
 e1.products    e1.categories   e1.suppliers   e1.order_items
-```
 
-**Key relationships:**
-```
 customers.CustomerID  →  orders.CustomerID
 orders.OrderID        →  payments.OrderID
 orders.OrderID        →  order_items.OrderID
+orders.WarehouseID    →  warehouses.WarehouseID
 products.ProductID    →  order_items.ProductID
 products.CategoryID   →  categories.CategoryID
 products.SupplierID   →  suppliers.SupplierID
@@ -42,448 +42,361 @@ products.SupplierID   →  suppliers.SupplierID
 
 <br>
 
-## <span style="color:#2E8B57">🟩 Section 1 — Basic Sales Joins</span>
+## <span style="color:#2E8B57">🟩 1 — Basic Sales Joins</span>
 
-![Section](https://img.shields.io/badge/Section-1-2E8B57) ![Theme](https://img.shields.io/badge/Theme-Green_%E2%80%94_INNER_JOIN_Fundamentals-2E8B57)
-
-### 🎯 The Goal
-
-Calculate total sales by joining `products` with `order_items`, then rolling that up by category and by supplier.
-
-### 1️⃣ Product-Wise Sales With Product Name
-
-**Task:** For every product, find the total sales value from `order_items`.
-
+**Product-wise sales**
 ```sql
 select
-  p.ProductID,
-  p.ProductName,
+  p.ProductID, p.ProductName,
   sum(oi.Total) as total_sales
 from `e1.products` as p
-inner join `e1.order_items` as oi
-  on p.ProductID = oi.ProductID
+inner join `e1.order_items` as oi on p.ProductID = oi.ProductID
 group by p.ProductName, p.ProductID
 ```
 
-| Clause | Purpose |
-|---|---|
-| `inner join` | Only includes products that actually have order items |
-| `sum(oi.Total)` | Aggregates all sales for that product |
-| `group by` | One row per product |
-
-### 2️⃣ Category-Wise Total Sales
-
-**Task:** Roll up sales to the category level.
-
+**Category-wise sales**
 ```sql
 select
-  c.CategoryID,
-  c.CategoryName,
+  c.CategoryID, c.CategoryName,
   sum(o.Total) as total_sales
 from `e1.products` as p
-inner join `e1.order_items` as o
-  on p.ProductID = o.ProductID
-inner join `e1.categories` as c
-  on c.CategoryID = p.CategoryID
+inner join `e1.order_items` as o on p.ProductID = o.ProductID
+inner join `e1.categories` as c on c.CategoryID = p.CategoryID
 group by c.CategoryID, c.CategoryName
-order by total_sales desc;
+order by total_sales desc
 ```
 
-> 🔗 **Join chain:** `order_items → products → categories`
-
-### 3️⃣ Supplier-Wise Total Sales
-
-**Task:** Roll up sales to the supplier level.
-
+**Supplier-wise sales**
 ```sql
 select
-  s.SupplierID,
-  s.SupplierName,
+  s.SupplierID, s.SupplierName,
   sum(o.Total) as total_sales
 from `e1.products` as p
-inner join `e1.order_items` as o
-  on p.ProductID = o.ProductID
-inner join `e1.suppliers` as s
-  on s.SupplierID = p.SupplierID
+inner join `e1.order_items` as o on p.ProductID = o.ProductID
+inner join `e1.suppliers` as s on s.SupplierID = p.SupplierID
 group by s.SupplierID, s.SupplierName
-order by total_sales desc;
+order by total_sales desc
 ```
 
-> 🔗 **Join chain:** `order_items → products → suppliers`
+> 🔗 All three follow the same shape: `INNER JOIN` products ↔ order_items, then optionally roll up one level further (category or supplier).
 
-### 🧭 Summary Table
-
-| Query | Join Chain | Grouped By |
-|---|---|---|
-| Product-wise sales | products ↔ order_items | ProductID, ProductName |
-| Category-wise sales | order_items ↔ products ↔ categories | CategoryID, CategoryName |
-| Supplier-wise sales | order_items ↔ products ↔ suppliers | SupplierID, SupplierName |
-
-[⬆ Back to top](#-table-of-contents)
+[⬆ Top](#-table-of-contents)
 
 ---
 
 <br>
 
-## <span style="color:#1E6FEB">🟦 Section 2 — Finding Missing Relationships</span>
+## <span style="color:#1E6FEB">🟦 2 — Finding Missing Relationships</span>
 
-![Section](https://img.shields.io/badge/Section-2-1E6FEB) ![Theme](https://img.shields.io/badge/Theme-Blue_%E2%80%94_LEFT_%2F_RIGHT_JOIN-1E6FEB)
-
-### 🎯 The Goal
-
-Use `LEFT JOIN` (and `RIGHT JOIN`) to find records that **have no match** on the other side — the classic "what's missing" pattern.
-
-### 1️⃣ Products With No Sales
-
-**Task:** Find products that have never appeared in an order.
-
+**Products with no sales**
 ```sql
 select
-  p.ProductID,
-  p.ProductName,
+  p.ProductID, p.ProductName,
   sum(oi.Total) as sales
 from `e1.products` as p
-left join `e1.order_items` as oi
-  on p.ProductID = oi.ProductID
+left join `e1.order_items` as oi on p.ProductID = oi.ProductID
 where oi.ProductID is null
 group by p.ProductID, p.ProductName
 ```
 
-| Step | Why |
-|---|---|
-| `left join` | Keeps **every** product, even with no matching order_items |
-| `where oi.ProductID is null` | Filters down to only the products with **no match** |
-
-### 2️⃣ Customers Who Registered But Never Ordered
-
+**Customers who never ordered**
 ```sql
-select
-  c.Name,
-  c.CustomerID,
-  o.CustomerID,
-  o.OrderID
+select c.Name, c.CustomerID, o.OrderID
 from `e1.customers` as c
-left join `e1.orders` as o
-  on c.CustomerID = o.CustomerID
+left join `e1.orders` as o on c.CustomerID = o.CustomerID
 where o.OrderID is null
 ```
 
-> 💡 Same pattern: `LEFT JOIN` + `WHERE ... IS NULL` = "find the ones with no match."
+> 🔁 **Variant:** the same query is often asked with extra columns — swap in `c.City, c.State` alongside `c.Name` and sort with `order by c.Name` to get an alphabetical "never-ordered" customer list with location.
 
-### 3️⃣ Order Count Per Customer — Including Zero Orders
-
-**Task:** Show every customer's order count, even customers with **0** orders.
-
-**Using `LEFT JOIN`:**
-
+**Order count per customer, including zero**
 ```sql
 select
-  c.CustomerID,
-  c.Name,
+  c.CustomerID, c.Name,
   count(o.OrderID) as no_of_orders
 from `e1.customers` as c
-left join `e1.orders` as o
-  on c.CustomerID = o.CustomerID
+left join `e1.orders` as o on c.CustomerID = o.CustomerID
 group by c.CustomerID, c.Name
 order by no_of_orders asc
 ```
 
-**Using `RIGHT JOIN`** (equivalent result, flipped table order):
+> 💡 **The pattern:** `LEFT JOIN` + `WHERE right.key IS NULL` = "find what's missing." `LEFT JOIN` + `COUNT(right.key)` = "count matches, including zero."
 
-```sql
-select
-  c.CustomerID,
-  c.Name,
-  count(o.OrderID) as no_of_orders
-from `e1.orders` as o
-right join `e1.customers` as c
-  on c.CustomerID = o.CustomerID
-group by c.CustomerID, c.Name
-order by no_of_orders asc
-```
-
-> ⚠️ `count(o.OrderID)` counts only **non-null** OrderIDs, so customers with no orders correctly show `0`.
-
-### 🧭 Summary Table
-
-| Pattern | Use Case |
-|---|---|
-| `LEFT JOIN` + `WHERE right_table.key IS NULL` | Find rows with **no match** (missing relationships) |
-| `LEFT JOIN` + `COUNT(right_table.key)` | Count matches per row, **including zero** |
-| `RIGHT JOIN` | Same as `LEFT JOIN` with tables swapped — a matter of readability preference |
-
-[⬆ Back to top](#-table-of-contents)
+[⬆ Top](#-table-of-contents)
 
 ---
 
 <br>
 
-## <span style="color:#D4A017">🟨 Section 3 — Multi-Table Customer Reports</span>
+## <span style="color:#D4A017">🟨 3 — Multi-Table Reports</span>
 
-![Section](https://img.shields.io/badge/Section-3-D4A017) ![Theme](https://img.shields.io/badge/Theme-Yellow_%E2%80%94_Three-Table_Joins_%2B_HAVING-D4A017)
-
-### 🎯 The Task
-
-> For every customer, calculate: **Customer ID, Customer name, Number of orders placed, Total amount paid through successful payments only.**
-> Display only customers whose successful payment amount is **greater than ₹50,000**. Sort highest → lowest.
-
-### 🔍 Step 1 — Explore the Tables
-
-```sql
-select * from `e1.customers` limit 5
-select * from `e1.orders`    limit 5
-select * from `e1.payments`  limit 5
-```
-
-**Relationship map:**
-```
-c.CustomerID → o.CustomerID
-p.OrderID    → o.OrderID
-```
-
-### ✅ The Full Query
-
+**Customer orders + successful payments only, > ₹50,000**
 ```sql
 select
-  c.customerID,
-  c.name,
+  c.customerID, c.name,
   count(distinct o.orderID) as no_of_orders,
   sum(p.amount) as total_paid
 from `e1.customers` as c
-inner join `e1.orders` as o
-  on c.customerID = o.customerID
-inner join `e1.payments` as p
-  on p.orderID = o.orderID
+inner join `e1.orders` as o on c.customerID = o.customerID
+inner join `e1.payments` as p on p.orderID = o.orderID
 where p.status = "Success"
 group by c.customerID, c.name
 having total_paid > 50000
 order by total_paid desc
 ```
 
-### 🧩 Breaking It Down
-
-| Clause | Purpose |
-|---|---|
-| `inner join ... orders` | Connects each customer to their orders |
-| `inner join ... payments` | Connects each order to its payment records |
-| `where p.status = "Success"` | Filters to **only successful** payments **before** aggregating |
-| `count(distinct o.orderID)` | Avoids inflating order count from multiple payment rows per order |
-| `having total_paid > 50000` | Filters **after** aggregation — can't use `WHERE` on a `SUM()` |
-| `order by total_paid desc` | Highest spenders first |
-
-> ⚠️ **Why `DISTINCT` in the count?** Joining orders → payments can create multiple rows per order (if there were retries or multiple payment attempts). `COUNT(DISTINCT o.orderID)` prevents double-counting orders.
-
-### 🧭 Summary Table
-
-| Concept | Purpose |
-|---|---|
-| 3-table join (customers → orders → payments) | Connects customer identity to their financial activity |
-| `WHERE` before `GROUP BY` | Filters raw rows (e.g., only successful payments) |
-| `HAVING` after `GROUP BY` | Filters aggregated results (e.g., total_paid > 50000) |
-| `COUNT(DISTINCT ...)` | Prevents inflated counts from join fan-out |
-
-[⬆ Back to top](#-table-of-contents)
-
----
-
-<br>
-
-## <span style="color:#E07B00">🟧 Section 4 — Multi-Table Product Reports</span>
-
-![Section](https://img.shields.io/badge/Section-4-E07B00) ![Theme](https://img.shields.io/badge/Theme-Orange_%E2%80%94_Four-Table_Joins_%2B_COALESCE-E07B00)
-
-### 1️⃣ Top 10 Products by Total Sales Value
-
-**Task:** Display ProductID, ProductName, CategoryName, SupplierName, number of order-item appearances, total quantity sold, total sales value, and average selling price. Only products with total sales **> ₹1,00,000**.
-
+**Top 10 products by total sales value, > ₹1,00,000**
 ```sql
 select
-  p.ProductID,
-  p.ProductName,
-  c.CategoryName,
-  s.SupplierName,
+  p.ProductID, p.ProductName, c.CategoryName, s.SupplierName,
   count(oi.OrderID) as no_of_records,
   sum(oi.Quantity) as total_qty,
   sum(oi.Total) as total_sales,
   avg(oi.sellingprice) as avg_selling_price
 from `e1.products` as p
-inner join `e1.categories` as c
-  on p.CategoryID = c.CategoryID
-inner join `e1.suppliers` as s
-  on p.SupplierID = s.SupplierID
-inner join `e1.order_items` as oi
-  on p.ProductID = oi.ProductID
-group by
-  p.ProductID, p.ProductName, c.CategoryName, s.SupplierName
+inner join `e1.categories` as c on p.CategoryID = c.CategoryID
+inner join `e1.suppliers` as s on p.SupplierID = s.SupplierID
+inner join `e1.order_items` as oi on p.ProductID = oi.ProductID
+group by p.ProductID, p.ProductName, c.CategoryName, s.SupplierName
 having total_sales > 100000
 order by total_sales desc
 limit 10
 ```
 
-> 🔗 **4-table join:** `products ↔ categories ↔ suppliers ↔ order_items`
-
-### 2️⃣ Category Report — Filtered by Product MRP
-
-**Task:** Only consider products with MRP **> ₹20,000**. For every category: CategoryID, CategoryName, number of qualifying products, average/max/min MRP. Only categories with **more than 2** qualifying products, sorted by avg MRP.
-
+**Category report — products with MRP > ₹20,000, >2 qualifying products**
 ```sql
 select
-  c.CategoryID,
-  c.CategoryName,
+  c.CategoryID, c.CategoryName,
   count(p.ProductID) as no_of_products,
   round(avg(p.MRP),2) as avg_mrp,
-  max(p.MRP) as max_mrp,
-  min(p.MRP) as min_mrp
+  max(p.MRP) as max_mrp, min(p.MRP) as min_mrp
 from `e1.categories` as c
-inner join `e1.products` as p
-  on c.CategoryID = p.CategoryID
+inner join `e1.products` as p on c.CategoryID = p.CategoryID
 where p.MRP > 20000
 group by c.CategoryID, c.CategoryName
 having no_of_products > 2
 order by avg_mrp desc
 ```
 
-> ⚠️ **Order matters:** `WHERE p.MRP > 20000` filters individual products **before** grouping; `HAVING no_of_products > 2` filters the **grouped result**.
-
-### 3️⃣ Full Supplier Report — Including Zero-Sales Suppliers
-
-**Task:** For every supplier: SupplierID, SupplierName, number of products supplied, average MRP, total sales, total quantity sold. **Include suppliers with no sales at all** — show 0 instead of NULL.
-
+**Full supplier report — including zero-sales suppliers**
 ```sql
 select
-  s.SupplierID,
-  s.SupplierName,
+  s.SupplierID, s.SupplierName,
   count(distinct p.ProductID) as prd_cnt,
   avg(p.MRP) as avg_mrp,
   coalesce(sum(oi.Total),0) as total_sales,
   coalesce(sum(oi.Quantity),0) as total_qty
 from `e1.suppliers` as s
-left join `e1.products` as p
-  on s.SupplierID = p.SupplierID
-left join `e1.order_items` as oi
-  on p.ProductID = oi.ProductID
+left join `e1.products` as p on s.SupplierID = p.SupplierID
+left join `e1.order_items` as oi on p.ProductID = oi.ProductID
 group by s.SupplierID, s.SupplierName
 order by total_sales desc
 ```
 
-| Clause | Purpose |
-|---|---|
-| `left join` (both) | Keeps suppliers even with no products, or products with no sales |
-| `coalesce(sum(...), 0)` | Converts `NULL` sums (from suppliers with zero matching rows) into `0` |
+> ⚠️ `WHERE` filters rows **before** grouping; `HAVING` filters the **aggregated result** — you'll often need both together.
 
-### 🧭 Summary Table
-
-| Query | Key Technique |
-|---|---|
-| Top 10 products | 4-table `INNER JOIN` + `HAVING` + `LIMIT` |
-| Category MRP report | `WHERE` (row filter) + `HAVING` (group filter) together |
-| Full supplier report | `LEFT JOIN` chain + `COALESCE()` to replace NULLs with 0 |
-
-[⬆ Back to top](#-table-of-contents)
+[⬆ Top](#-table-of-contents)
 
 ---
 
 <br>
 
-## <span style="color:#C0392B">🟥 Section 5 — Unsolved Practice Problems</span>
+## <span style="color:#E07B00">🟧 4 — ALTER TABLE & Warehouse Report</span>
 
-![Section](https://img.shields.io/badge/Section-5-C0392B) ![Theme](https://img.shields.io/badge/Theme-Red_%E2%80%94_Test_Yourself-C0392B)
-
-### 📝 About This Section
-
-These prompts appear in the source **without** worked solutions — they're meant for you to solve using the patterns from Sections 1–4. Each includes a hint pointing to the relevant technique.
-
-### 1️⃣ Warehouse Sales Report
-
-> For every warehouse, calculate: WarehouseID, Warehouse name, Number of orders handled, Total quantity of products sold, Total sales value. **Include warehouses even if they have no orders.** Display only warehouses where total sales value **> ₹2,00,000**. Sort highest → lowest.
-
-💡 **Hint:** `LEFT JOIN` (to include zero-order warehouses) + `COALESCE()` + `HAVING` — same pattern as the Full Supplier Report in Section 4.
-
-### 2️⃣ Customers Above Average Spending
-
-> Calculate total sales value generated by every customer. Display only customers whose total spending is **greater than the average customer spending**. Show CustomerID, Customer name, Total spending — sorted highest to lowest.
-
-💡 **Hint:** You'll need a **subquery** (or CTE) to first calculate each customer's total spending, then compare each customer against the average of those totals.
-
+**Fix generic column names first:**
 ```sql
--- Skeleton
-select CustomerID, Name, total_spending
-from (
-  -- calculate each customer's total spending here
-) t
-where total_spending > (
-  -- calculate the AVERAGE of total_spending here
-)
-order by total_spending desc
+alter table `e1.warehouses` rename column string_field_0 to WarehouseID
+alter table `e1.warehouses` rename column string_field_1 to Warehouse
 ```
 
-### 3️⃣ Products Above Their Category's Average Sales
+**Then build the report — every warehouse included, even with zero orders:**
+```sql
+select
+  w.WarehouseID, w.Warehouse,
+  count(distinct o.OrderID) as no_of_orders,
+  coalesce(sum(oi.Total),0) as total_sales,
+  coalesce(sum(oi.Quantity)) as total_qty
+from `e1.warehouses` as w
+left join `e1.orders` as o on w.warehouseID = o.WarehouseID
+left join `e1.order_items` as oi on o.OrderID = oi.OrderID
+group by w.WarehouseID, w.Warehouse
+having total_sales > 200000
+order by total_sales desc
+```
 
-> For every product, calculate its total sales value. Display only products whose total sales value is **greater than the average total sales value of products in the same category**. Show ProductID, ProductName, CategoryName, TotalSales — sorted highest to lowest.
+> 💡 Anchoring `FROM` on `warehouses` + `LEFT JOIN` out is what guarantees no warehouse gets dropped, even with no orders.
 
-💡 **Hint:** This is trickier than #2 — the "average" here is **per category**, not overall. You'll likely need a subquery that computes average sales **grouped by category**, then join it back to per-product sales.
+[⬆ Top](#-table-of-contents)
 
-### 4️⃣ Order Value Classification
+---
 
-> For every order, calculate the total order value (sum of `Total` from `order_items`). Classify each order as:
-> - **High Value** → ≥ ₹50,000
-> - **Medium Value** → ₹20,000–₹49,999
-> - **Low Value** → < ₹20,000
->
-> Display: OrderID, OrderDate, CustomerName, TotalOrderValue, OrderCategory. Show highest-value orders first.
+<br>
 
-💡 **Hint:** This needs a `CASE WHEN ... THEN ... END` expression alongside your join and `GROUP BY`.
+## <span style="color:#C0392B">🟥 5 — Subqueries: Comparing Against Averages</span>
+
+**Customers above average customer spending**
+
+> ⚠️ Average customer spending = average of *each customer's total*, not `AVG()` over raw order-item rows.
 
 ```sql
--- Skeleton
 select
-  o.OrderID,
-  o.OrderDate,
-  c.Name as CustomerName,
-  sum(oi.Total) as TotalOrderValue,
+  c.CustomerID, c.Name,
+  sum(oi.Total) as total_sales
+from `e1.customers` as c
+inner join `e1.orders` as o on c.CustomerID = o.CustomerID
+inner join `e1.order_items` as oi on o.OrderID = oi.OrderID
+group by c.CustomerID, c.Name
+having total_sales > (
+  select round(avg(total_sales),2)
+  from (
+    select o.CustomerID, sum(oi.Total) as total_sales
+    from `e1.order_items` as oi
+    inner join `e1.orders` as o on oi.OrderID = o.OrderID
+    group by o.CustomerID
+  )
+)
+order by total_sales desc
+```
+
+**Products above their own category's average sales (correlated subquery)**
+
+```sql
+select
+  p.ProductID, p.ProductName, c.CategoryName,
+  sum(oi.Total) as total_sales
+from `e1.products` as p
+inner join `e1.categories` as c on p.CategoryID = c.CategoryID
+inner join `e1.order_items` as oi on p.ProductID = oi.ProductID
+group by p.ProductID, p.ProductName, p.CategoryID, c.CategoryName
+having total_sales > (
+  select avg(total_sales)
+  from (
+    select p1.ProductID, sum(oi.Total) as total_sales
+    from `e1.products` as p1
+    inner join `e1.order_items` as oi on p1.ProductID = oi.ProductID
+    where p1.CategoryID = p.CategoryID
+    group by p1.ProductID
+  )
+)
+order by total_sales desc
+```
+
+> ⚠️ `where p1.CategoryID = p.CategoryID` makes this **correlated** — the subquery re-runs per outer row, scoped to that row's category.
+
+[⬆ Top](#-table-of-contents)
+
+---
+
+<br>
+
+## <span style="color:#8E44AD">🟪 6 — CASE WHEN</span>
+
+```sql
+case
+  when condition1 then result1
+  when condition2 then result2
+  else default_result
+end
+```
+
+**Age group classification**
+```sql
+select
+  CustomerID, Age, Name,
   case
-    when sum(oi.Total) >= 50000 then 'High Value'
-    when sum(oi.Total) >= 20000 then 'Medium Value'
-    else 'Low Value'
+    when Age >= 18 and Age <= 20 then "GenZ"
+    when Age >= 21 and Age <= 40 then "Adult"
+    else "Senior_Citizen"
+  end as age_group
+from `e1.customers` as c
+```
+
+**Gender relabeling**
+```sql
+select
+  CustomerID, Name, Gender,
+  case when Gender = 'M' then 'Male' else 'Female' end as Gender_New
+from `e1.customers`
+```
+
+**Order value classification (High/Medium/Low)**
+```sql
+select
+  o.OrderID, o.OrderDate, c.Name,
+  sum(oi.Total) as total_sales,
+  case
+    when sum(oi.Total) >= 50000 then "High Value"
+    when sum(oi.Total) >= 20000 then "Medium Value"
+    else "Low Value"
   end as OrderCategory
 from `e1.orders` as o
--- join customers and order_items, then group by, then order by
+inner join `e1.customers` as c on o.CustomerID = c.CustomerID
+inner join `e1.order_items` as oi on o.OrderID = oi.OrderID
+group by o.OrderID, o.OrderDate, c.Name
+order by total_sales desc
 ```
 
-### 5️⃣ Category-Level Sales Report (Filtered)
+> ⚠️ Conditions are checked top-to-bottom — order overlapping ranges from most to least specific, or you'll misclassify rows. `CASE` can also wrap an aggregate like `SUM()`, not just raw columns.
 
-> Create a category-level report: CategoryID, CategoryName, number of products in the category, number of *different* products sold, total quantity sold, total sales value, average selling price. **Only consider order-item records where SellingPrice > ₹10,000.** Display only categories where total sales value **> ₹5,00,000**. Sort highest → lowest.
+[⬆ Top](#-table-of-contents)
 
-💡 **Hint:** Notice this needs **two different product counts** — total products in the category (regardless of sales) vs. distinct products actually sold. That likely means combining a `LEFT JOIN` with `COUNT(DISTINCT ...)` carefully, plus a `WHERE` filter on `SellingPrice` before aggregating.
+---
 
-### 🔁 DPP Review Set (Same Patterns, Fresh Practice)
+<br>
 
-The source also repeats these as a standalone practice set — solve them again without looking back to check retention:
+## <span style="color:#008B8B">🟦‍⬛ 7 — Advanced Integrated Report</span>
 
-| # | Prompt | Related Pattern |
-|---|---|---|
-| 1 | Top 10 products by total sales value (full detail columns) | Section 4, Query 1 |
-| 2 | Category report filtered by MRP > ₹20,000, >2 qualifying products | Section 4, Query 2 |
-| 3 | Customers who never ordered — include **City and State** this time | Section 2, Query 2 |
-| 4 | Full supplier report including zero-sales suppliers | Section 4, Query 3 |
+**Category-level report combining WHERE + dual COUNT(DISTINCT) + HAVING**
 
-### 🧭 Summary Table
+```sql
+select
+  c.CategoryID, c.CategoryName,
+  count(distinct p.ProductID) as total_products,
+  count(distinct oi.ProductID) as different_products_sold,
+  sum(oi.Quantity) as total_qty,
+  sum(oi.Total) as total_sales,
+  round(avg(oi.SellingPrice),2) as avg_selling_price
+from `e1.categories` as c
+inner join `e1.products` as p on p.CategoryID = c.CategoryID
+inner join `e1.order_items` as oi on oi.ProductID = p.ProductID
+where oi.SellingPrice > 10000
+group by c.CategoryID, c.CategoryName
+having total_sales > 500000
+order by total_sales desc
+```
 
-| Problem | Core Technique Needed |
-|---|---|
-| Warehouse report | LEFT JOIN + COALESCE + HAVING |
-| Above-average customer spending | Subquery comparing against an AVG() |
-| Above-average category sales | Subquery grouped by category |
-| Order value classification | CASE WHEN |
-| Filtered category sales report | WHERE + COUNT(DISTINCT) + HAVING |
+**Discount % + high-performing products**
 
-[⬆ Back to top](#-table-of-contents)
+```
+discount_percentage = (MRP - SellingPrice) * 100 / MRP
+```
+
+```sql
+select
+  p.ProductID, p.ProductName, c.CategoryName,
+  p.MRP, p.SellingPrice,
+  ((p.MRP - p.SellingPrice)*100)/p.MRP as discount_percentage,
+  sum(oi.Total) as total_sales
+from `e1.products` as p
+inner join `e1.categories` as c on p.CategoryID = c.CategoryID
+inner join `e1.order_items` as oi on p.ProductID = oi.ProductID
+where p.MRP > 15000
+group by p.ProductID, p.ProductName, c.CategoryName, p.MRP, p.SellingPrice
+having
+  ((p.MRP - p.SellingPrice)*100)/p.MRP > 20
+  and total_sales > 75000
+order by discount_percentage desc
+```
+
+> 💡 `HAVING` can chain multiple conditions with `AND`, just like `WHERE`.
+
+[⬆ Top](#-table-of-contents)
 
 ---
 
 <div align="center">
 
-### 🎉 Roadmap Complete!
-*From single inner joins to four-table reports with HAVING, COALESCE, and unsolved challenges to test yourself.*
+### 🎉 End of Notes
+*Joins → missing relationships → multi-table reports → ALTER TABLE → subqueries → CASE WHEN → combined report.*
 
 </div>
