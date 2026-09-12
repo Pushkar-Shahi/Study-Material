@@ -1,9 +1,9 @@
 <div align="center">
 
 # ☁️ AWS Certified Cloud Practitioner (CLF-C02) Roadmap
-### *From Cloud Fundamentals to Account Setup & Cost Management*
+### *From Cloud Fundamentals to Infrastructure, Architecture & Sustainability*
 
-![Progress](https://img.shields.io/badge/Sections_Covered-6-blue) ![Status](https://img.shields.io/badge/Status-Complete-brightgreen) ![Platform](https://img.shields.io/badge/Platform-AWS-FF9900?logo=amazonaws&logoColor=white)
+![Progress](https://img.shields.io/badge/Sections_Covered-12-blue) ![Status](https://img.shields.io/badge/Status-Complete-brightgreen) ![Platform](https://img.shields.io/badge/Platform-AWS-FF9900?logo=amazonaws&logoColor=white)
 
 </div>
 
@@ -19,6 +19,12 @@
 | 4️⃣ | 🟧 **Types of Cloud Computing** | Service models (IaaS/PaaS/SaaS) + deployment models | [`04_types_of_cloud_computing.md`](./04_types_of_cloud_computing.md) | ✅ |
 | 5️⃣ | 🟥 **Setting Up Your AWS Account** | Root user, MFA, IAM, Free Tier, region | [`05_setting_up_account.md`](./05_setting_up_account.md) | ✅ |
 | 6️⃣ | 🟪 **Managing Costs** | Budgets, Free Tier details, Billing Alarms | [`06_managing_costs.md`](./06_managing_costs.md) | ✅ |
+| 7️⃣ | 🟩 **Digital Transformation & Computing Power** | CAF, K-waves, CPU vs GPU vs Quantum | [`07_digital_transformation.md`](./07_digital_transformation.md) | ✅ |
+| 8️⃣ | 🟦 **The Benefits of the Cloud** | Cost efficiency, agility, elasticity, reliability | [`08_cloud_benefits.md`](./08_cloud_benefits.md) | ✅ |
+| 9️⃣ | 🟨 **AWS Global Infrastructure** | Regions, AZs, regional vs global services, fault tolerance | [`09_global_infrastructure.md`](./09_global_infrastructure.md) | ✅ |
+| 🔟 | 🟧 **Networking & Edge Infrastructure** | PoPs, Direct Connect, Local Zones, Wavelength Zones | [`10_networking_edge.md`](./10_networking_edge.md) | ✅ |
+| 1️⃣1️⃣ | 🟥 **Compliance, Data Residency & Government Cloud** | Outposts, Config, SCPs, GovCloud, China | [`11_compliance_residency.md`](./11_compliance_residency.md) | ✅ |
+| 1️⃣2️⃣ | 🟪 **Sustainability & Specialized Infrastructure** | Climate Pledge, energy efficiency, Ground Station | [`12_sustainability_specialized.md`](./12_sustainability_specialized.md) | ✅ |
 
 ---
 
@@ -32,12 +38,18 @@
 | 🟧 | Types of Cloud Computing | IaaS, PaaS, SaaS, Public/Private/Hybrid/Multi-Cloud |
 | 🟥 | Setting Up Your Account | Root User, MFA, IAM, US-East-1 |
 | 🟪 | Managing Costs | AWS Budgets, Free Tier, Billing Alarms |
+| 🟩 | Digital Transformation & Computing Power | Burning Platform, CAF, K-Waves, TCO, AWS Inferentia, Amazon Braket |
+| 🟦 | The Benefits of the Cloud | CapEx → OpEx, Agility, Global Reach, Scalability, Elasticity, Seven Advantages |
+| 🟨 | AWS Global Infrastructure | Regions, AZs, US-East-1, Regional vs Global Services, Fault Domains/Levels, AWS Trusted Advisor |
+| 🟧 | Networking & Edge Infrastructure | Global Network, Edge Locations, PoPs, Direct Connect, Local Zones, Wavelength Zones |
+| 🟥 | Compliance, Data Residency & Government Cloud | Data Residency, Data Sovereignty, Outposts, Config, SCPs, GovCloud, FedRAMP, AWS China |
+| 🟪 | Sustainability & Specialized Infrastructure | Climate Pledge, Renewable Energy, Cloud Efficiency, Water Stewardship, Ground Station, Outposts, Snow Family |
 
 ---
 
 <div align="center">
 
 ### 🎉 Roadmap Complete!
-*From "what is the cloud?" to a secured, budget-monitored AWS account.*
+*From Cloud Fundamentals to Infrastructure, Architecture & Sustainability.*
 
 </div>

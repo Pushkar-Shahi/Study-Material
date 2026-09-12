@@ -89,8 +89,6 @@ A **CloudWatch** feature that monitors AWS spend and notifies you when costs exc
 
 <div align="center">
 
-⬅️ [Previous: Section 5 — Setting Up Your AWS Account](./05_setting_up_account.md) &nbsp;&nbsp;|&nbsp;&nbsp; 🏠 [Roadmap](./00_README.md)
-
-### 🎉 You've completed the full AWS Cloud Practitioner Roadmap!
+⬅️ [Previous: Section 5 — Setting Up Your AWS Account](./05_setting_up_account.md) &nbsp;&nbsp;|&nbsp;&nbsp; 🏠 [Roadmap](./00_README.md) &nbsp;&nbsp;|&nbsp;&nbsp; [➡️ Next: Section 7 — Digital Transformation & Computing Power](./07_digital_transformation.md)
 
 </div>
